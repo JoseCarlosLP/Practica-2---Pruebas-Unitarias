@@ -23,13 +23,14 @@ def setup_teardown_metapieza():
 class TestMetapiezaInit:
     
     def test_metapieza_dentro_de_posisiones_validas(self, setup_teardown_metapieza):
-        casx=8
-        casy=2
+        x=8
+        y=2
+        color="c"
         # Precondición:
-        assert 0 <= casx < 9, "Error: casx fuera del rango"
-        assert 0 <= casy < 9, "Error: casy fuera del rango"
+        assert 0 <= x < 9
+        assert 0 <= y < 9
 
-        ob = metapieza(casx, casy, "c")
+        ob = metapieza(x, y, color)
         
         # Postcondición:
         assert ob.casx < 9
@@ -39,33 +40,35 @@ class TestMetapiezaInit:
         assert cocupadas[ob.casy][ob.casx] == ob.color
         
     def test_metapieza_fuera_del_limite_y(self, setup_teardown_metapieza):
-        casx=8
-        casy=10
+        x=8
+        y=10
+        color="c"
         # Precondición:
-        assert 0 <= casx < 9, "Error: casx fuera del rango"
-        assert casy >= 9, "Error: casx debería estar fuera del límite"
+        assert 0 <= x < 9
+        assert y >= 9
         
-        ob = metapieza(casx, casy, "c")
+        ob = metapieza(x, y, color)
         
         # Postcondición: 
         assert ob.casx < 9
         assert ob.casy >= 9
         assert ob.color == "c"
-        assert ob not in ocupadas, "Error: la pieza no debería estar en ocupadas"
-        assert ob.color not in cocupadas, "Error: el color de la pieza no debería estar en cocupadas"
+        assert ob not in ocupadas
+        assert ob.color not in cocupadas
         
     def test_metapieza_fuera_del_limite_x(self, setup_teardown_metapieza):
         # Precondición:
-        casx=10
-        casy=2
-        assert casx >= 9, "Error: casx debería estar fuera del límite"
-        assert 0 <= casy < 9, "Error: casy fuera del rango"
+        x=10
+        y=2
+        color="c"
+        assert x >= 9
+        assert 0 <= y < 9
         
-        ob = metapieza(casx, casy, "c")
+        ob = metapieza(x, y, color)
         
         # Postcondición: 
         assert ob.casx >= 9
         assert ob.casy < 9
         assert ob.color == "c"
-        assert ob not in ocupadas, "Error: la pieza no debería estar en ocupadas"
-        assert ob.color not in cocupadas, "Error: el color de la pieza no debería estar en cocupadas"
+        assert ob not in ocupadas
+        assert ob.color not in cocupadas
