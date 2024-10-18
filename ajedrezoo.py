@@ -42,7 +42,7 @@ class metapieza():
 
     def cambiasilla(self, x, y):
         ocupadas[self.casy][self.casx] = cocupadas[self.casy][self.casx] = 0
-        self.__init__(x, y)
+        self.__init__(x, y, 1)
         self.movida = 1
 
     def casillaocupada(self):
