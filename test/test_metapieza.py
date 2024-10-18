@@ -10,7 +10,7 @@ def pieza_fixture():
             ocupadas[i][j] = 0
             cocupadas[i][j] = 0
 
-    pieza = metapieza(1, 1, "c")
+    pieza = metapieza(1, 1, 1)
     return pieza
 
 def test_cambiasilla(pieza_fixture):
