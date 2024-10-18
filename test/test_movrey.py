@@ -73,3 +73,28 @@ class TestMovrey:
         assert mov_posibles == []
         assert rey.casposibles == []
 
+    @mock.patch('ajedrezoo.torrenegra')
+    @mock.patch('ajedrezoo.torreblanca')
+    @mock.patch('ajedrezoo.metapieza.movlineal', return_value=[])
+    @mock.patch('ajedrezoo.metapieza.movdiagonal', return_value=[])
+    def test_todas_las_torres_movidas(self, mock_movlineal, mock_diagonal, mock_torreblanca, mock_torrenegra, setup_rey):
+        rey = setup_rey
+        torres_blancas = [0, MagicMock(movida=1), MagicMock(movida=1)]
+        torres_negras = [0, MagicMock(movida=1), MagicMock(movida=1)]
+        mock_torrenegra.__getitem__.side_effect = torres_negras.__getitem__
+        mock_torreblanca.__getitem__.side_effect = torres_blancas.__getitem__
+
+        # Precondicion: Todas las torres se movieron menos el rey
+        assert mock_torrenegra[1].movida == 1
+        assert mock_torrenegra[2].movida == 1
+        assert mock_torreblanca[1].movida == 1
+        assert mock_torreblanca[2].movida == 1
+        assert rey.movida == 0
+
+        mov_posibles = rey.movrey()
+
+        # Postcondicion: El rey no puede enrocar porque las torres fueron movidas
+        assert rey.movida == 0
+        assert mov_posibles == []
+        assert rey.casposibles == []
+
