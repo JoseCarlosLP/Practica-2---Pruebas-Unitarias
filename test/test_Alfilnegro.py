@@ -1,5 +1,4 @@
 from unittest import mock
-from unittest.mock import MagicMock
 
 import pygame
 import pytest
