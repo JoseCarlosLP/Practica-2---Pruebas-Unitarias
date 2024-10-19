@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ajedrezoo import Reinablanca, comepieza, ocupadas, cocupadas, sacapieza, Reyblanco
+from ajedrezoo import Reinablanca, comepieza, ocupadas, cocupadas
 
 
 @pytest.fixture

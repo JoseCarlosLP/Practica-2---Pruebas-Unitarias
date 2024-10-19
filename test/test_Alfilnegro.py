@@ -2,19 +2,41 @@ from unittest import mock
 
 import pygame
 import pytest
-from ajedrezoo import Alfilnegro, metapieza
+from ajedrezoo import Alfilnegro, metapieza, ocupadas, cocupadas
 
 
 class TestAlfilnegro:
-    def test_alfilnegro_init_(self):
+    @pytest.fixture
+    def setup_teardown_metapieza(self):
+        global ocupadas, cocupadas
+
+        print("\nSetup: Inicializando tablero")
+        assert all(len(fila) == 9 for fila in ocupadas), "Error: ocupadas debe tener 9 columnas"
+        assert all(len(fila) == 9 for fila in cocupadas), "Error: cocupadas debe tener 9 columnas"
+
+        yield
+
+        print("\nTeardown: Limpiando ocupadas y cocupadas")
+        ocupadas = [[0] * 9 for _ in range(9)]
+        cocupadas = [[0] * 9 for _ in range(9)]
+
+        assert all(
+            all(casilla == 0 for casilla in fila) for fila in ocupadas), "Error: ocupadas no fue limpiada correctamente"
+        assert all(
+            all(casilla == 0 for casilla in fila) for fila in
+            cocupadas), "Error: cocupadas no fue limpiada correctamente"
+
+    def test_alfilnegro_init_(self, setup_teardown_metapieza):
         pieza = Alfilnegro(3)
         assert isinstance(pieza, Alfilnegro)
         assert pieza.casx == 3
         assert pieza.casy == 1
         assert isinstance(pieza.foto, pygame.Surface)
+        assert ocupadas[pieza.casy][pieza.casx] == pieza
+        assert cocupadas[pieza.casy][pieza.casx] == 2
 
     @mock.patch('ajedrezoo.metapieza.movdiagonal', return_value=[(2, 2), (4, 2)])
-    def test_puedemovera(self, mock_movdiagonal):
+    def test_puedemovera(self, mock_movdiagonal, setup_teardown_metapieza):
         pieza = Alfilnegro(3)
         # Precondicion: Que la instancia del Alfilnegro sea correcta
         assert isinstance(pieza, Alfilnegro)
