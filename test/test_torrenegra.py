@@ -25,12 +25,10 @@ def setup_teardown_torre_negra():
 class TestTorreNegraInit:
     
     def test_torrenegra_init_(self, setup_teardown_torre_negra):
-        
         x=8
         # Precondición:
         assert 0 <= x < 9
         ob = Torrenegra(x)
-        print(ob.puedemovera())
         
         # Postcondición:
         assert ob.casx < 9
@@ -39,16 +37,17 @@ class TestTorreNegraInit:
         assert isinstance(ob.foto, pygame.Surface)
         assert ocupadas[ob.casy][ob.casx] == ob
         assert cocupadas[ob.casy][ob.casx] == ob.color
+
     @mock.patch('ajedrezoo.metapieza.movlineal', return_value=[(7, 1), (8, 2),(6,1)])
-    def test_puedemovera(self, mock_movlineal):
+    def test_puedemovera(self, mock_movlineal, setup_teardown_torre_negra):
         x=8
         # Precondición:
         assert 0 <= x < 9
+
         ob = Torrenegra(x)
-        # Precondicion: Que la instancia del Alfilnegro sea correcta
         assert isinstance(ob, Torrenegra)
 
         mov_posibles = ob.puedemovera()
 
-        #Postcondicion: Solo se puede mover a las casillas que el metodo metapieza.movdiagonal devuelve
+        #Postcondicion: 
         assert mov_posibles == [(7, 1), (8, 2),(6,1)]
