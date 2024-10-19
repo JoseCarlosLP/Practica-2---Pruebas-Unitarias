@@ -1,5 +1,6 @@
 import pytest
-from ajedrezoo import torrenegra, ocupadas, cocupadas
+from ajedrezoo import Torrenegra, ocupadas, cocupadas
+import pygame
 
 @pytest.fixture
 def setup_teardown_torre_negra():
@@ -22,19 +23,17 @@ def setup_teardown_torre_negra():
     
 class TestTorreNegraInit:
     
-    def test_metapieza_dentro_de_posisiones_validas(self, setup_teardown_torre_negra):
+    def test_crear_torre(self, setup_teardown_torre_negra):
+        
         x=8
-        y=2
-        color="c"
         # Precondición:
         assert 0 <= x < 9
-        assert 0 <= y < 9
-
-        ob = metapieza(x, y, color)
+        ob = Torrenegra(x)
         
         # Postcondición:
         assert ob.casx < 9
-        assert ob.casy < 9
-        assert ob.color == "c"
+        assert ob.casy == 1
+        assert ob.color == 2
+        assert isinstance(ob.foto, pygame.Surface)
         assert ocupadas[ob.casy][ob.casx] == ob
         assert cocupadas[ob.casy][ob.casx] == ob.color

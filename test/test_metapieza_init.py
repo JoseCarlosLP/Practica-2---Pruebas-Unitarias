@@ -25,7 +25,7 @@ class TestMetapiezaInit:
     def test_metapieza_dentro_de_posisiones_validas(self, setup_teardown_metapieza):
         x=8
         y=2
-        color="c"
+        color=1
         # Precondición:
         assert 0 <= x < 9
         assert 0 <= y < 9
@@ -35,14 +35,14 @@ class TestMetapiezaInit:
         # Postcondición:
         assert ob.casx < 9
         assert ob.casy < 9
-        assert ob.color == "c"
+        assert ob.color == 1
         assert ocupadas[ob.casy][ob.casx] == ob
         assert cocupadas[ob.casy][ob.casx] == ob.color
         
     def test_metapieza_fuera_del_limite_y(self, setup_teardown_metapieza):
         x=8
         y=10
-        color="c"
+        color=1
         # Precondición:
         assert 0 <= x < 9
         assert y >= 9
@@ -52,7 +52,7 @@ class TestMetapiezaInit:
         # Postcondición: 
         assert ob.casx < 9
         assert ob.casy >= 9
-        assert ob.color == "c"
+        assert ob.color == 1
         assert ob not in ocupadas
         assert ob.color not in cocupadas
         
@@ -60,7 +60,7 @@ class TestMetapiezaInit:
         # Precondición:
         x=10
         y=2
-        color="c"
+        color=1
         assert x >= 9
         assert 0 <= y < 9
         
@@ -69,6 +69,6 @@ class TestMetapiezaInit:
         # Postcondición: 
         assert ob.casx >= 9
         assert ob.casy < 9
-        assert ob.color == "c"
+        assert ob.color == 1
         assert ob not in ocupadas
         assert ob.color not in cocupadas
