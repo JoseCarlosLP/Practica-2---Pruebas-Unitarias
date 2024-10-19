@@ -131,3 +131,38 @@ class TestMovrey:
         assert rey.movida == 0
         assert mov_posibles == []
         assert rey.casposibles == []
+
+    @mock.patch('ajedrezoo.cocupadas')
+    @mock.patch('ajedrezoo.torrenegra')
+    @mock.patch('ajedrezoo.torreblanca')
+    @mock.patch('ajedrezoo.metapieza.movlineal', return_value=[])
+    @mock.patch('ajedrezoo.metapieza.movdiagonal', return_value=[])
+    def test_sin_enroque_torres_izq_movidas_una_casilla_dere_ocupada(self, mock_movlineal, mock_diagonal, mock_torreblanca,
+                                                                  mock_torrenegra, mock_cocupadas, setup_rey):
+        rey = setup_rey
+        torres_blancas = [0, MagicMock(movida=1), MagicMock(movida=0)]
+        torres_negras = [0, MagicMock(movida=1), MagicMock(movida=1)]
+        mock_torrenegra.__getitem__.side_effect = torres_negras.__getitem__
+        mock_torreblanca.__getitem__.side_effect = torres_blancas.__getitem__
+
+        mock_cocupadas = [[0] * 8 for _ in range(8)]
+        mock_cocupadas[rey.casy][rey.casx + 1] = 1 # Marcamos como ocupada la casilla
+
+        # Precondicion: Las torres en el lado izquierdo del tablero se movieron, las torres en el lado derecho y el
+        # rey no se movieron
+        assert mock_torrenegra[1].movida == 1
+        assert mock_torrenegra[2].movida == 1
+        assert mock_torreblanca[1].movida == 1
+        assert mock_torreblanca[2].movida == 0
+        assert rey.movida == 0
+        # Precondicion: Una casilla a la derecha del rey esta ocupada, no permite enroque a ese lado, solo al lado izquierdo
+        assert mock_cocupadas[rey.casy][rey.casx + 2] == 0
+        assert mock_cocupadas[rey.casy][rey.casx + 1] == 1
+        assert mock_cocupadas[rey.casy][rey.casx - 2] == 0
+
+        mov_posibles = rey.movrey()
+
+        # Postcondicion: El rey no puede enrocar porque las torres de la izq se movieron y las casilla [casx+2] esta ocupada
+        assert rey.movida == 0
+        assert mov_posibles == []
+        assert rey.casposibles == []
