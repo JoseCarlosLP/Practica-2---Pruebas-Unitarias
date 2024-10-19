@@ -22,7 +22,7 @@ def setup_teardown_torre_negra():
     assert all(all(casilla == 0 for casilla in fila) for fila in cocupadas), "Error: cocupadas no fue limpiada correctamente"
     
     
-class TestTorreNegraInit:
+class TestTorreNegra:
     
     def test_torrenegra_init_(self, setup_teardown_torre_negra):
         x=8
