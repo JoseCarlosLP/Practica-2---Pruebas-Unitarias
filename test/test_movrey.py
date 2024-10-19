@@ -202,3 +202,35 @@ class TestMovrey:
         assert rey.movida == 0
         assert mov_posibles == [(7,1)]
         assert rey.casposibles == [(7,1)]
+
+    @mock.patch('ajedrezoo.cocupadas')
+    @mock.patch('ajedrezoo.torrenegra')
+    @mock.patch('ajedrezoo.torreblanca')
+    @mock.patch('ajedrezoo.metapieza.movlineal', return_value=[])
+    @mock.patch('ajedrezoo.metapieza.movdiagonal', return_value=[])
+    def test_torres_izq_movidas(self, mock_movlineal, mock_diagonal, mock_torreblanca,
+                                                                  mock_torrenegra, mock_cocupadas, setup_rey):
+        rey = setup_rey
+        torres_blancas = [0, MagicMock(movida=1), MagicMock(movida=0)]
+        torres_negras = [0, MagicMock(movida=1), MagicMock(movida=1)]
+        mock_torrenegra.__getitem__.side_effect = torres_negras.__getitem__
+        mock_torreblanca.__getitem__.side_effect = torres_blancas.__getitem__
+
+        # Precondicion: Todas las casillas entre las torres y el rey estan libres
+        matriz_cocupadas = [[0] * 8 for _ in range(8)]
+        mock_cocupadas.__getitem__.side_effect = matriz_cocupadas.__getitem__
+
+        # Precondicion: Las torres en el lado izquierdo del tablero se movieron, las torres en el lado derecho y el
+        # rey no se movieron
+        assert mock_torrenegra[1].movida == 1
+        assert mock_torrenegra[2].movida == 1
+        assert mock_torreblanca[1].movida == 1
+        assert mock_torreblanca[2].movida == 0
+        assert rey.movida == 0
+
+        mov_posibles = rey.movrey()
+
+        # Postcondicion: Si se puede hacer enroque al lado derecho porque la torre no se movio y las casillas no estan ocupadas
+        assert rey.movida == 0
+        assert mov_posibles == [(7,1)]
+        assert rey.casposibles == [(7,1)]
