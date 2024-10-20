@@ -72,3 +72,17 @@ class TestMetapiezaInit:
         assert ob.color == 1
         assert ob not in ocupadas
         assert ob.color not in cocupadas
+
+    def test_casilla_ocupada(self):
+        x = 8
+        y = 2
+        color = 1
+
+        #Precondición:
+        assert 0 <= x < 9
+        assert 0 <= y < 9
+
+        ob = metapieza(x, y, color)
+
+        #Postcondición:
+        assert ob.casillaocupada() == (2, 8)
