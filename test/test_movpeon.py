@@ -1,26 +1,25 @@
 import pytest
-from ajedrezoo import *
+from ajedrezoo import ocupadas,cocupadas,metapeon,metapieza
 from unittest import mock
 
 @pytest.fixture
 def setup_teardown():
-    global ocupadas, cocupadas,lpeon
+    global lpeon
     lpeon = [0, -1, 1, 5, 4]
-
     print("\nSetup: Inicializando tablero")
-    assert all(len(fila) == 9 for fila in ocupadas), "Error: ocupadas debe tener 9 columnas"
-    assert all(len(fila) == 9 for fila in cocupadas), "Error: cocupadas debe tener 9 columnas"
-    
-    
-    yield
-    
-    print("\nTeardown: Limpiando ocupadas y cocupadas")
-    ocupadas = [[0]*9 for _ in range(9)]
-    cocupadas = [[0]*9 for _ in range(9)]
-    
-    assert all(all(casilla == 0 for casilla in fila) for fila in ocupadas), "Error: ocupadas no fue limpiada correctamente"
-    assert all(all(casilla == 0 for casilla in fila) for fila in cocupadas), "Error: cocupadas no fue limpiada correctamente"
-    
+    for i in range(8):
+        for j in range(8):
+            ocupadas[i][j] = 0
+            cocupadas[i][j] = 0
+
+    yield  # Permitir que el test se ejecute
+
+    print("\nSetup: Limpiando tablero")
+    for i in range(8):
+        for j in range(8):
+            ocupadas[i][j] = 0
+            cocupadas[i][j] = 0
+
     
 class TestMovpeon:
    def test_sin_casillas_adelante(self,setup_teardown):
@@ -109,19 +108,18 @@ class TestMovpeon:
    # Verificar que solo se añadió la casilla que se encuentra en frente
        assert ob.casposibles==[(8,6)]
 
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(8,6),(7,6)])
    def test_puede_avanzar_hacia_adelante_pero_no_es_su_primera_movida_con_enemigo_a_diagonal_izquierda_y_sin_espacio_en_diagonal_derecha(self,setup_teardown):
        x=8
        y=7
        color=1
-       cocupadas[y-1][x-1]=2
+       metapieza(x-1,y-1,2)
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
           
        ob=metapeon(x,y,color)
        ob.movida=2
-       ob.casposibles=ob.movpeon()
+       ob.movpeon()
       #  Poscondición
     #    verificar que se añade la casilla del frente vacía
        assert (ob.casx,ob.casy+lpeon[ob.color]) in ob.casposibles
@@ -135,17 +133,22 @@ class TestMovpeon:
    # Verificar que se se añadió la casilla que se encuentra en frente y diagonal izquierda
        assert ob.casposibles==[(8,6),(7,6)]
 
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(0,6)])
-   def test_movimiento_inicial_pero_ocupado_y_espacio_para_diagonal_derecha_sin_enemigo_y_sin_espacio_en_diagonal_izquierda(self,mock_movpeon,setup_teardown):
-       x=0
+   def test_movimiento_inicial_pero_ocupado_y_espacio_para_diagonal_derecha_sin_enemigo_y_sin_espacio_en_diagonal_izquierda(self,setup_teardown):
+       print(ocupadas)
+       x=1
        y=7
        color=1
-       cocupadas[5][0]=2
+       ocupadas[5][1]=metapieza(1,5,2)
+       cocupadas[5][1]=2
+       ocupadas[6][1]=0
+       cocupadas[6][1]=0
+       
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
        ob=metapeon(x,y,color)
-       ob.casposibles=ob.movpeon()
+       ob.movpeon()
+
     # Poscondición:
     #    verificar que se añade la casilla del frente vacía
        assert (ob.casx,ob.casy+lpeon[ob.color]) in ob.casposibles
@@ -158,22 +161,23 @@ class TestMovpeon:
     #    Verificar que NO hay enemigo derecha
        assert cocupadas[ob.casy + lpeon[ob.color]][ob.casx + 1] != 3 - ob.color
     #    Verificar que NO se puede hacer captura diagonal izquierda
-       assert 0 > ob.casx - 1
+       assert 0 >= ob.casx - 1
+       assert ob.casposibles==[(1,6)]
 
-       assert ob.casposibles==[(0,6)]
-
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(0,6),(1,6)])
-   def test_movimiento_inicial_pero_ocupado_y_enemigo_en_diagonal_derecha_sin_espacio_en_diagonal_izquierda(self,mock_movpeon,setup_teardown):
-       x=0
+   def test_movimiento_inicial_pero_ocupado_y_enemigo_en_diagonal_derecha_sin_espacio_en_diagonal_izquierda(self,setup_teardown):
+       x=1
        y=7
        color=1
-       cocupadas[5][0]=2
-       cocupadas[6][1]=2
+       
+       ocupadas[5][1]=metapieza(1,5,2)
+       ocupadas[6][2]=metapieza(2,6,2)
+       cocupadas[5][1]=2
+       cocupadas[6][2]=2
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
        ob=metapeon(x,y,color)
-       ob.casposibles=ob.movpeon()
+       ob.movpeon()
     # Poscondición:
     #    verificar que se añade la casilla del frente vacía
        assert (ob.casx,ob.casy+lpeon[ob.color]) in ob.casposibles
@@ -186,14 +190,16 @@ class TestMovpeon:
     #    Verificar que hay enemigo derecha
        assert cocupadas[ob.casy + lpeon[ob.color]][ob.casx + 1] == 3 - ob.color
     #    Verificar que NO se puede hacer captura diagonal izquierda
-       assert 0 > ob.casx - 1
+       assert 0 >= ob.casx - 1
        
-       assert ob.casposibles==[(0,6), (1,6)]
+       assert ob.casposibles==[(1,6), (2,6)]
 
    def test_movimiento_inicial_doble_sin_enemigo_a_diagonal_izquierda_y_sin_espacio_en_diagonal_derecha(self,setup_teardown):
        x=8
        y=7
        color=1
+       ocupadas[6][7]=metapieza(7,6,1)
+       cocupadas[6][7]=1
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9           
@@ -214,19 +220,23 @@ class TestMovpeon:
    # Verificar que solo se añadió la casilla que se encuentra en frente
        assert ob.casposibles==[(8,6),(8,5)]
 
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(0,6),(0,5)])
-   def test_movimiento_inicial_y_espacio_para_diagonal_derecha_sin_enemigo_y_sin_espacio_en_diagonal_izquierda(self,mock_movpeon,setup_teardown):
-       x=0
+   def test_movimiento_inicial_y_espacio_para_diagonal_derecha_sin_enemigo_y_sin_espacio_en_diagonal_izquierda(self,setup_teardown):
+       x=1
        y=7
        color=1
+
+       ocupadas[5][1]=0
+       cocupadas[5][1]=0
+       ocupadas[6][1]=0
+       cocupadas[6][1]=0
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
        ob=metapeon(x,y,color)
-       ob.casposibles=ob.movpeon()
+       ob.movpeon()
     # Poscondición:
     #    verificar que se añade la casilla del frente vacía
-       assert (ob.casx,ob.casy+lpeon[ob.color]) in ob.casposibles
+       assert (ob.casx, ob.casy + lpeon[ob.color]) in ob.casposibles
     #    Verificar que se añade la segunda casilla al frente
        assert (ob.casx, lpeon[ob.color + 2]) in ob.casposibles
     #    Verificar que si se puede hacer captura diagonal derecha
@@ -234,21 +244,25 @@ class TestMovpeon:
     #    Verificar que NO hay enemigo derecha
        assert cocupadas[ob.casy + lpeon[ob.color]][ob.casx + 1] != 3 - ob.color
     #    Verificar que NO se puede hacer captura diagonal izquierda
-       assert 0 > ob.casx - 1
-       assert ob.casposibles==[(0,6),(0,5)]
+       assert 0 >= ob.casx - 1
+       assert ob.casposibles==[(1,6),(1,5)]
 
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(0,6),(0,5),(1,6)])
-   def test_movimiento_inicial_y_captura_a_derecha_sin_espacio_en_diagonal_izquierda(self, mock_movpeon,setup_teardown):
-       x=0
-       y=7
-       color=1
-       cocupadas[6][1]=2
+   def test_movimiento_inicial_y_captura_a_derecha_sin_espacio_en_diagonal_izquierda(self, setup_teardown):
+       
+       x = 1
+       y = 7
+       color = 1
+       cocupadas[6][2] = 2  # Enemigo en diagonal derecha
+       ocupadas[6][2] = metapieza(2, 6, 2)
+       ocupadas[6][1] = 0  # Casilla al frente libre
+       cocupadas[6][1] = 0
+       ocupadas[5][1] = 0  # Segunda casilla al frente libre
+       cocupadas[5][1] = 0
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
-          
        ob=metapeon(x,y,color)
-       ob.casposibles=ob.movpeon()
+       ob.movpeon()
     # Poscondición:
        assert (ob.casx,ob.casy+lpeon[ob.color]) in ob.casposibles
     #    Verificar que se añade la segunda casilla al frente
@@ -256,18 +270,18 @@ class TestMovpeon:
     #    Verificar si hay enemigo a la diagonal derecha
        assert cocupadas[ob.casy + lpeon[ob.color]][ob.casx + 1] == 3 - ob.color
     #    Verificar que NO hay espacio a  izquierda
-       assert 0 > ob.casx - 1
+       assert 0 >= ob.casx - 1
     #    Verificar que no se añada enemigo de diagonal izquierda
        assert (ob.casx - 1, ob.casy + lpeon[ob.color]) not in ob.casposibles
-       assert ob.casposibles ==[(0,6),(0,5),(1,6)]  
+       assert ob.casposibles ==[(1,6),(1,5),(2,6)]  
 
-
-   @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(4,6),(4,5),(5,6)])
-   def test_movpeon_movimiento_inicial_y_captura_a_derecha_sin_enemigo_a_izquierda(self, mock_movpeon,setup_teardown):
+   def test_movpeon_movimiento_inicial_y_captura_a_derecha_sin_enemigo_a_izquierda(self,setup_teardown):
        x=4
        y=7
        color=1
+       ocupadas[6][5]=metapieza(5,6,2)
        cocupadas[6][5]=2
+       
     # Precondición:
        assert 0 <= x < 9
        assert 0 <= y < 9 
