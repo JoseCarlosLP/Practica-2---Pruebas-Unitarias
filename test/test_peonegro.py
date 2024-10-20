@@ -3,7 +3,7 @@ from ajedrezoo import Peonegro, ocupadas, cocupadas
 import pygame
 from unittest import mock
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def setup_teardown():
     global ocupadas, cocupadas
 
@@ -24,7 +24,7 @@ def setup_teardown():
     
 class TestPeonBlanco:
     
-    def test_peonblanco_init_(self):
+    def test_peonblanco_init_(self, setup_teardown):
         x=6
         # Precondición:
         assert 0 <= x < 9
@@ -38,7 +38,7 @@ class TestPeonBlanco:
         assert cocupadas[ob.casy][ob.casx] == ob.color
 
     @mock.patch('ajedrezoo.metapeon.movpeon', return_value=[(6, 3),(6, 4)])
-    def test_puedemovera(self, mock_movpeon):
+    def test_puedemovera(self, mock_movpeon, setup_teardown):
         x=6
         # Precondición:
         assert 0 <= x < 9
