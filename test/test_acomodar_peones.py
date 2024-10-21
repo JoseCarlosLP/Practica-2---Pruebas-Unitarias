@@ -4,8 +4,6 @@ from unittest import mock
 
 @pytest.fixture
 def setup_teardown():
-    global lpeon
-    lpeon = [0, -1, 1, 5, 4]
     print("\nSetup: Inicializando tablero")
     for i in range(8):
         for j in range(8):
@@ -14,7 +12,7 @@ def setup_teardown():
 
     yield  # Permitir que el test se ejecute
 
-    print("\nSetup: Limpiando tablero")
+    print("\nTeardown: Limpiando tablero")
     for i in range(8):
         for j in range(8):
             ocupadas[i][j] = 0
