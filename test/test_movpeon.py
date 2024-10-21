@@ -14,7 +14,7 @@ def setup_teardown():
 
     yield  # Permitir que el test se ejecute
 
-    print("\nSetup: Limpiando tablero")
+    print("\nTeardown: Limpiando tablero")
     for i in range(8):
         for j in range(8):
             ocupadas[i][j] = 0
