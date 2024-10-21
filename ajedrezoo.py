@@ -42,37 +42,76 @@ class metapieza():
 
     def cambiasilla(self, x, y):
         ocupadas[self.casy][self.casx] = cocupadas[self.casy][self.casx] = 0
-        self.__init__(x, y, 1)
+        self.__init__(x, y)
         self.movida = 1
 
     def casillaocupada(self):
         return self.casy, self.casx
+    
+
 
     def movlineal(self, movmax=8):
+        print("1")
         casi = 0
         oriz = ordr = vrab = vrar = True
         while casi < movmax:
+            print("2") 
             casi += 1
-            if 0 < self.casy <= 8 and 0 < self.casx - casi <= 8 and oriz:
-                oriz = cocupadas[self.casy][self.casx - casi] != self.color
-                if oriz:
-                    self.casposibles.append((self.casx - casi, self.casy))
-                    oriz = cocupadas[self.casy][self.casx - casi] != 3 - self.color
-            if 0 < self.casy <= 8 and 0 < self.casx + casi <= 8 and ordr:
-                ordr = cocupadas[self.casy][self.casx + casi] != self.color
-                if ordr:
-                    self.casposibles.append((self.casx + casi, self.casy))
-                    ordr = cocupadas[self.casy][self.casx + casi] != 3 - self.color
-            if 0 < self.casy - casi <= 8 and 0 < self.casx <= 8 and vrab:
-                vrab = cocupadas[self.casy - casi][self.casx] != self.color
-                if vrab:
-                    self.casposibles.append((self.casx, self.casy - casi))
-                    vrab = cocupadas[self.casy - casi][self.casx] != 3 - self.color
-            if 0 < self.casy + casi <= 8 and 0 < self.casx <= 8 and vrar:
-                vrar = cocupadas[self.casy + casi][self.casx] != self.color
-                if vrar:
-                    self.casposibles.append((self.casx, self.casy + casi))
-                    vrar = cocupadas[self.casy + casi][self.casx] != 3 - self.color
+            # if 0 < self.casy <= 8 and 0 < self.casx - casi <= 8 and oriz: #X decreciente
+            print("3")
+            if 0 < self.casy <= 8:
+                print("4")
+                if 0 < self.casx - casi <= 8:
+                    print("5")
+                    if oriz:
+                        oriz = cocupadas[self.casy][self.casx - casi] != self.color #es el mismo color? 
+                        print("6")
+                        if oriz:
+                            self.casposibles.append((self.casx - casi, self.casy))
+                            oriz = cocupadas[self.casy][self.casx - casi] != 3 - self.color #es diferente color? la pieza puede capturar la pieza enemiga, pero no puede seguir moviéndose más allá de esta casilla.
+                            print("7")
+            # if 0 < self.casy <= 8 and 0 < self.casx + casi <= 8 and ordr: #X creciente
+            print("8")
+            if 0 < self.casy <= 8:
+                print("9")
+                if 0 < self.casx + casi <= 8:
+                    print("10")
+                    if ordr:
+                        ordr = cocupadas[self.casy][self.casx + casi] != self.color
+                        print("11")
+                        if ordr:
+                            self.casposibles.append((self.casx + casi, self.casy))
+                            ordr = cocupadas[self.casy][self.casx + casi] != 3 - self.color
+                            print("12")
+            # if 0 < self.casy - casi <= 8 and 0 < self.casx <= 8 and vrab: #Y decreciente
+            print("13")
+            if 0 < self.casy - casi <= 8:
+                print("14")
+                if 0 < self.casx <= 8:
+                    print("15")
+                    if vrab:
+                        vrab = cocupadas[self.casy - casi][self.casx] != self.color
+                        print("16")
+                        if vrab:
+                            self.casposibles.append((self.casx, self.casy - casi))
+                            vrab = cocupadas[self.casy - casi][self.casx] != 3 - self.color
+                            print("17")
+            # if 0 < self.casy + casi <= 8 and 0 < self.casx <= 8 and vrar: #Y creciente
+            print("18")
+            if 0 < self.casy + casi <= 8:
+                print("19")
+                if 0 < self.casx <= 8:
+                    print("20")
+                    if vrar:
+                        vrar = cocupadas[self.casy + casi][self.casx] != self.color
+                        print("21")
+                        if vrar:
+                            self.casposibles.append((self.casx, self.casy + casi))
+                            vrar = cocupadas[self.casy + casi][self.casx] != 3 - self.color
+                            print("22")
+            # casi = 8
+        print("2")
+        print("23")
         return self.casposibles
 
     def movdiagonal(self, movmax=8):
@@ -104,14 +143,23 @@ class metapieza():
 
 
 class metaballo(metapieza):
+    
     def movcaballo(self):
         for x in [-2, -1, 1, 2]:
             for y in [-(3 - abs(x)), 3 - abs(x)]:
-                if 0 < self.casy + y <= 8 and 0 < self.casx + x <= 8:
-                    if cocupadas[self.casy + y][self.casx + x] == 0 or \
-                            cocupadas[self.casy + y][self.casx + x] == 3 - self.color:
-                        self.casposibles.append((self.casx + x, self.casy + y))
+                print("3")
+                print("4")
+                if 0 < self.casy + y <= 8:
+                    print("5")
+                    if 0 < self.casx + x <= 8:
+                        if cocupadas[self.casy + y][self.casx + x] == 0:
+                            print("6")
+                            self.casposibles.append((self.casx + x, self.casy + y))
+                        elif cocupadas[self.casy + y][self.casx + x] == 3 - self.color:
+                            print("7")
+                            self.casposibles.append((self.casx + x, self.casy + y))
         return self.casposibles
+
 
 
 class metapeon(metapieza):
@@ -331,6 +379,7 @@ if __name__ == "__main__":
     print("empiezan las blancas")
 
     while True:
+        # print(cocupadas)
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()

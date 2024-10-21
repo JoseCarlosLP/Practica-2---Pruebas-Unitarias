@@ -1,49 +1,148 @@
 import pytest
-from ajedrezoo import metapieza, ocupadas, cocupadas
+from ajedrezoo import metapieza, cocupadas
 
-@pytest.fixture
-def pieza_fixture():
-    global ocupadas, cocupadas
-    #Precondicion
+def tablero_fixture():
     for i in range(9):
         for j in range(9):
-            ocupadas[i][j] = 0
             cocupadas[i][j] = 0
+    return cocupadas
 
-    pieza = metapieza(1, 1, 1)
-    return pieza
+#C1: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-2-23-F
+def test_metapieza_movlineal1():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 4, 1)
+    movimientos_esperados = [(3, 4), (4, 3), (4, 5), (5, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
 
-def test_cambiasilla(pieza_fixture):
-    pieza = pieza_fixture
+#C2: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-21-2-23-F
+def test_metapieza_movlineal2():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 4, 1)
+    cocupadas[5][4] = 1
+    movimientos_esperados = [(3, 4), (4, 3), (5, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
 
-    # Verificar precondiciones
-    assert ocupadas[1][1] == pieza, "La pieza debería estar en la posición inicial (1, 1)"
-    assert cocupadas[1][1] == 1, "La casilla (1, 1) debería estar ocupada por una pieza de color 1"
-    assert pieza.movida == 0, "La pieza no debería haber sido movida inicialmente"
+#C3: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-2-23-F
+def test_metapieza_movlineal3():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 4, 1)
+    cocupadas[5][4] = 1
+    movimientos_esperados = [(2, 4), (3, 4), (4, 2), (4, 3), (5, 4), (6, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(2)) == sorted(movimientos_esperados)
 
-    for i in range(9):
-        for j in range(9):
-            if (i, j) != (1, 1):
-                assert ocupadas[i][j] == 0, f"La casilla ({i}, {j}) debería estar vacía antes del movimiento"
-                assert cocupadas[i][j] == 0, f"La casilla de color ({i}, {j}) debería estar vacía antes del movimiento"
+#C5: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-2-23-F
+def test_metapieza_movlineal5():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 8, 1)
+    movimientos_esperados = [(3, 8), (4, 7), (5, 8)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
 
-    # Cambiar la posición de la pieza a (2, 2)
-    pieza.cambiasilla(2, 2)
+#C6: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-18-2-23-F
+def test_metapieza_movlineal6():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 8, 1)
+    cocupadas[7][4] = 1 
+    movimientos_esperados = [(3, 8), (5, 8)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
 
-    # Verificar postcondiciones
-    assert ocupadas[1][1] == 0, "La casilla (1, 1) debería estar vacía después de mover la pieza"
-    assert cocupadas[1][1] == 0, "El color de la casilla (1, 1) debería estar vacío después del movimiento"
+#C7: I-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-18-2-23-F
+def test_metapieza_movlineal7():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 8, 1)
+    cocupadas[7][4] = 1 
+    movimientos_esperados = [(2, 8), (3, 8), (5, 8), (6, 8)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(2)) == sorted(movimientos_esperados)
 
-    assert ocupadas[2][2] == pieza, "La pieza debería estar en la nueva posición (2, 2)"
-    assert cocupadas[2][2] == 1, "La casilla (2, 2) debería estar ocupada por una pieza de color 1"
-    
-    for i in range(9):
-        for j in range(9):
-            if (i, j) not in [(1, 1), (2, 2)]:
-                assert ocupadas[i][j] == 0, f"La casilla ({i}, {j}) debería estar vacía tras el movimiento"
-                assert cocupadas[i][j] == 0, f"La casilla de color ({i}, {j}) debería estar vacía tras el movimiento"
+#C9: I-1-2-3-4-5-6-7-8-9-10-11-12-13-18-19-20-21-2-23-F
+def test_metapieza_movlineal9():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 1, 1)
+    for x in range(9):
+        cocupadas[2][x] = 1
+    movimientos_esperados = [(3, 1), (5, 1)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
 
-    # Verificar estado final
-    assert pieza.casx == 2, "La coordenada X de la pieza debería ser 2"
-    assert pieza.casy == 2, "La coordenada Y de la pieza debería ser 2"
-    assert pieza.movida == 1, "La pieza debería haber sido marcada como movida"
+#C10: I-1-2-3-4-5-6-7-8-9-10-11-13-14-15-18-19-20-2-23-F
+def test_metapieza_movlineal10():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(6, 4, 1)
+    cocupadas[3][6] = 1
+    cocupadas[5][6] = 1
+    cocupadas[4][7] = 1
+    movimientos_esperados = [(5, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
+
+#C11: I-1-2-3-4-5-6-7-8-9-10-13-14-15-18-19-20-2-23-F
+def test_metapieza_movlineal11():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(6, 4, 1)
+    cocupadas[3][6] = 1
+    cocupadas[4][7] = 1
+    cocupadas[5][6] = 1
+    movimientos_esperados = [(4, 4), (5, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(2)) == sorted(movimientos_esperados)
+
+#C12: I-1-2-3-4-5-6-8-9-13-18-19-20-21-2-23-F
+def test_metapieza_movlineal12():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(8, 1, 1)
+    movimientos_esperados = [(7, 1), (8, 2)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
+
+#C14: I-1-2-3-4-5-6-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-2-23-F
+def test_metapieza_movlineal14():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(3, 4, 1)
+    cocupadas[4][2] = 1
+    movimientos_esperados = [(3, 3), (3, 5), (4, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
+
+#C15: I-1-2-3-4-5-6-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-2-23-F
+def test_metapieza_movlineal15():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(3, 4, 1)
+    cocupadas[4][2] = 1
+    movimientos_esperados = [(3, 2), (3, 3), (3, 5), (3, 6), (4, 4), (5, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(2)) == sorted(movimientos_esperados)
+
+#C16: I-1-2-3-4-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-2-23-F
+def test_metapieza_movlineal16():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(1, 4, 1)
+    movimientos_esperados = [(1, 3), (1, 5), (2, 4)]
+    #Postcondicion
+    assert sorted(pieza.movlineal(1)) == sorted(movimientos_esperados)
+
+#C18: I-1-2-23-F
+def test_metapieza_movlineal18():
+    #Precondicion
+    tablero_fixture()
+    pieza = metapieza(4, 4, 1)
+    #Postcondicion
+    assert pieza.movlineal(0)==[]
+

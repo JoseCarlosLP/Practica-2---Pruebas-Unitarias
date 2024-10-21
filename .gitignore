@@ -1,3 +1,6 @@
 # Archivos de pycharm
 .idea/
 
+.coverage
+
+**/__pycache__/*

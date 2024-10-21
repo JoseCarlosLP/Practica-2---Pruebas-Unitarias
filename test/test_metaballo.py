@@ -1,45 +1,74 @@
 import pytest
 from ajedrezoo import metaballo,ocupadas, cocupadas
 
-@pytest.fixture
-def setup():
-    global ocupadas, cocupadas
-    #Precondicion
+@pytest.fixture(scope="function")
+def tablero_fixture():
     for i in range(9):
         for j in range(9):
-            ocupadas[i][j] = 0
             cocupadas[i][j] = 0
+    return cocupadas
 
+#C1: I-1-2-3-4-5-6-7-8-3-2-9-F
+def test_movcaballo1(tablero_fixture):
     pieza = metaballo(4, 4, 1)
-    return pieza
+    movimientos_esperados = [(2, 3), (6, 3), (3, 2), (5, 2), (2, 5), (6, 5), (3, 6), (5, 6)]
+    assert sorted(pieza.movcaballo()) == sorted(movimientos_esperados)
 
-def test_movcaballo(setup):
-    pieza = setup
+#C2: I-1-2-3-4-5-6-7-3-2-9-F
+def test_movcaballo2(tablero_fixture):
+    pieza = metaballo(4, 4, 1)
+    cocupadas[3][2] = 1
+    cocupadas[3][6] = 1
+    cocupadas[2][3] = 1
+    cocupadas[2][5] = 1
+    cocupadas[5][2] = 1
+    cocupadas[5][6] = 1
+    cocupadas[6][3] = 1
+    cocupadas[6][5] = 1
+    assert pieza.movcaballo() == []
 
-    # Precondición: El caballo debe estar en la posición inicial (4,4) y no debe haber movimientos posibles al inicio
-    assert len(pieza.casposibles) == 0
+#C3: I-1-2-3-4-5-6-8-3-2-9-F
+def test_movcaballo3(tablero_fixture):
+    pieza = metaballo(4, 4, 1)
+    cocupadas[3][2] = 1
+    cocupadas[2][3] = 1
+    cocupadas[5][2] = 1
+    cocupadas[6][3] = 1
+    cocupadas[2][5] = 1
+    cocupadas[3][6] = 1
+    movimientos = pieza.movcaballo()
+    assert (6, 5) in movimientos
+    assert (5, 6) in movimientos
+    assert len(movimientos) == 2
 
-    # Configura una situación donde el caballo puede moverse libremente
-    for x in [-2, -1, 1, 2]:
-        for y in [-(3 - abs(x)), 3 - abs(x)]:
-            new_x = pieza.casx + x
-            new_y = pieza.casy + y
-            if 0 < new_x <= 8 and 0 < new_y <= 8:
-                # Coloca casillas vacías o con piezas del color contrario en las posiciones posibles
-                cocupadas[new_y][new_x] = 0
+#C4: I-1-2-3-4-5-3-2-9-F
+def test_movcaballo4(tablero_fixture):
+    pieza = metaballo(8, 4, 1)
 
-    # Llamada a la función movcaballo
-    movimientos_posibles = pieza.movcaballo()
+    movimientos = pieza.movcaballo()
+    movimientos_esperados = [(7, 2), (6, 3), (6, 5), (7, 6)]
 
-    # Postcondición: Verifica que el caballo tiene 8 movimientos posibles
-    assert len(movimientos_posibles) == 8
+    for movimiento in movimientos_esperados:
+        assert movimiento in movimientos
 
-    # Verifica que los movimientos sean válidos
-    for (casx, casy) in movimientos_posibles:
-        assert 0 < casx <= 8, f"Movimiento inválido fuera del tablero en x: {casx}"
-        assert 0 < casy <= 8, f"Movimiento inválido fuera del tablero en y: {casy}"
-        assert cocupadas[casy][casx] == 0 or cocupadas[casy][casx] == 2, \
-            f"Movimiento no permitido a casilla ocupada por pieza del mismo color en {casx}, {casy}"
+    movimientos_no_validos = [(9, 2), (10, 3),(10, 5),(9, 6)]
+    for movimiento in movimientos_no_validos:
+        assert movimiento not in movimientos
 
-    # Verifica que todos los nodos se recorrieron correctamente
-    assert len(movimientos_posibles) == 8, "No se recorrieron todas las combinaciones posibles."
+    assert len(movimientos) == len(movimientos_esperados)
+
+#C5: I-1-2-3-4-3-2-9-F
+def test_movcaballo5(tablero_fixture):
+    pieza = metaballo(7, 8, 1)
+
+    movimientos = pieza.movcaballo()
+    movimientos_esperados = [(6, 6), (8, 6), (5, 7)]
+
+    for movimiento in movimientos_esperados:
+        assert movimiento in movimientos
+
+    movimientos_no_validos = [(9, 7), (5, 9)]
+    for movimiento in movimientos_no_validos:
+        assert movimiento not in movimientos
+
+    assert len(movimientos) == len(movimientos_esperados)
