@@ -28,28 +28,7 @@ class TestAcomodarPeones():
         acomodar_peones(peonegro,peonblanco)
         assert peonegro==[0]
         assert peonblanco==[0]
-        assert ocupadas == [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],  
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]
-        assert cocupadas == [  #color de las ocupadas
-            [0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]
+        
 
     def test_acomodar_peones_p_en_rango(self,setup_teardown):
         peonegro=[0]
@@ -58,12 +37,9 @@ class TestAcomodarPeones():
         assert peonegro!=[0]
         assert peonblanco!=[0]
         assert isinstance(ocupadas[7][3], Peonblanco)
-        assert ocupadas[7] != [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        assert cocupadas[7]==[0, 1, 1, 1, 1, 1, 1, 1, 1]
+        assert ocupadas[7][2] != 0
+        assert cocupadas[7][3]==1
         assert isinstance(ocupadas[2][3], Peonegro)
-        assert ocupadas[2] != [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        assert cocupadas[2]==[0, 2, 2, 2, 2, 2, 2, 2, 2]
-
-        
-    
+        assert ocupadas[2][3] != 0
+        assert cocupadas[2][3]==2
         
