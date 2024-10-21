@@ -22,9 +22,9 @@ def setup_teardown():
     assert all(all(casilla == 0 for casilla in fila) for fila in cocupadas), "Error: cocupadas no fue limpiada correctamente"
     
     
-class TestPeonBlanco:
+class TestPeonegro:
     
-    def test_peonblanco_init_(self, setup_teardown):
+    def test_peonegro_init_(self, setup_teardown):
         x=6
         # Precondición:
         assert 0 <= x < 9
