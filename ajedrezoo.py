@@ -317,15 +317,13 @@ def puede_comer_pieza(nuevacasillax, nuevacasillay):
         comepieza(sacapieza(nuevacasillax, nuevacasillay))
 
 
-def mover_rey(fichamover, enroke):
-    if fichamover == reynegro or fichamover == reyblanco:
-        # Mover rey negro
+def mover_torres_enroque(fichamover, enroke, nuevacasillax, nuevacasillay, reynegro):
+    if fichamover == reynegro:
         if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 1):
             torrenegra[2].cambiasilla(6, 1)
         if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 1):
             torrenegra[1].cambiasilla(4, 1)
-        # Mover rey blanco
-    if fichamover == reyblanco:
+    else:
         if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 8):
             torreblanca[2].cambiasilla(6, 8)
         if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 8):
@@ -419,7 +417,7 @@ def actualizar_pantalla(visor, tablero, gblancas, gnegras, reynegro, reyblanco):
     pygame.display.update()
 
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     visor, tablero, puntoazul, gblancas, gnegras = inicializar_juego()
     reynegro, reyblanco, reinanegra, reinablanca, peonegro, peonblanco, caballonegro, caballoblanco, alfilnegro, alfilblanco = inicializar_piezas()
 
@@ -455,7 +453,7 @@ if __name__ == "_main_":
                 puede_comer_pieza(nuevacasillax, nuevacasillay)
                 fichamover.cambiasilla(nuevacasillax, nuevacasillay)
 
-                mover_rey(fichamover, enroke)
+                mover_torres_enroque(fichamover, enroke, nuevacasillax, nuevacasillay, reynegro)
 
                 turno = cambiar_turno(fichamover)
         dibujar_piezas(visor, peonblanco, peonegro, caballonegro, caballoblanco, torrenegra, torreblanca, alfilnegro,
