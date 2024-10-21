@@ -39,7 +39,7 @@ también se puede emplear el siguiente comando para ver a mayor detalle la ejecu
 Con este comando se obtiene el siguiente resultado
 
 ![py -m pytest -v -s](./images/comando2.png)
-# HERRAMIENTA DE COVERTURA-COVERAGE
+# HERRAMIENTA DE COVERTURA-Coverage
 
 Coverage.py, es una librería de Python que se utiliza para realizar una medición y cobertura de nuestro código ejecutado, nos da la posibilidad de visualizar tanto por la consola o en reportes en formato (Html, Xml, Json), que líneas de códigos “no se ejecutó” y “cuales si se ejecutó”.
 ### Ejemplo de Resultados
