@@ -419,7 +419,7 @@ def actualizar_pantalla(visor, tablero, gblancas, gnegras, reynegro, reyblanco):
     pygame.display.update()
 
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     visor, tablero, puntoazul, gblancas, gnegras = inicializar_juego()
     reynegro, reyblanco, reinanegra, reinablanca, peonegro, peonblanco, caballonegro, caballoblanco, alfilnegro, alfilblanco = inicializar_piezas()
 
