@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+#-- coding: utf-8 --
 import pygame, sys
 from pygame.locals import *
 
@@ -47,71 +47,32 @@ class metapieza():
 
     def casillaocupada(self):
         return self.casy, self.casx
-    
-
 
     def movlineal(self, movmax=8):
-        print("1")
         casi = 0
         oriz = ordr = vrab = vrar = True
         while casi < movmax:
-            print("2") 
             casi += 1
-            # if 0 < self.casy <= 8 and 0 < self.casx - casi <= 8 and oriz: #X decreciente
-            print("3")
-            if 0 < self.casy <= 8:
-                print("4")
-                if 0 < self.casx - casi <= 8:
-                    print("5")
-                    if oriz:
-                        oriz = cocupadas[self.casy][self.casx - casi] != self.color #es el mismo color? 
-                        print("6")
-                        if oriz:
-                            self.casposibles.append((self.casx - casi, self.casy))
-                            oriz = cocupadas[self.casy][self.casx - casi] != 3 - self.color #es diferente color? la pieza puede capturar la pieza enemiga, pero no puede seguir moviéndose más allá de esta casilla.
-                            print("7")
-            # if 0 < self.casy <= 8 and 0 < self.casx + casi <= 8 and ordr: #X creciente
-            print("8")
-            if 0 < self.casy <= 8:
-                print("9")
-                if 0 < self.casx + casi <= 8:
-                    print("10")
-                    if ordr:
-                        ordr = cocupadas[self.casy][self.casx + casi] != self.color
-                        print("11")
-                        if ordr:
-                            self.casposibles.append((self.casx + casi, self.casy))
-                            ordr = cocupadas[self.casy][self.casx + casi] != 3 - self.color
-                            print("12")
-            # if 0 < self.casy - casi <= 8 and 0 < self.casx <= 8 and vrab: #Y decreciente
-            print("13")
-            if 0 < self.casy - casi <= 8:
-                print("14")
-                if 0 < self.casx <= 8:
-                    print("15")
-                    if vrab:
-                        vrab = cocupadas[self.casy - casi][self.casx] != self.color
-                        print("16")
-                        if vrab:
-                            self.casposibles.append((self.casx, self.casy - casi))
-                            vrab = cocupadas[self.casy - casi][self.casx] != 3 - self.color
-                            print("17")
-            # if 0 < self.casy + casi <= 8 and 0 < self.casx <= 8 and vrar: #Y creciente
-            print("18")
-            if 0 < self.casy + casi <= 8:
-                print("19")
-                if 0 < self.casx <= 8:
-                    print("20")
-                    if vrar:
-                        vrar = cocupadas[self.casy + casi][self.casx] != self.color
-                        print("21")
-                        if vrar:
-                            self.casposibles.append((self.casx, self.casy + casi))
-                            vrar = cocupadas[self.casy + casi][self.casx] != 3 - self.color
-                            print("22")
-            # casi = 8
-        print("2")
-        print("23")
+            if 0 < self.casy <= 8 and 0 < self.casx - casi <= 8 and oriz:
+                oriz = cocupadas[self.casy][self.casx - casi] != self.color
+                if oriz:
+                    self.casposibles.append((self.casx - casi, self.casy))
+                    oriz = cocupadas[self.casy][self.casx - casi] != 3 - self.color
+            if 0 < self.casy <= 8 and 0 < self.casx + casi <= 8 and ordr:
+                ordr = cocupadas[self.casy][self.casx + casi] != self.color
+                if ordr:
+                    self.casposibles.append((self.casx + casi, self.casy))
+                    ordr = cocupadas[self.casy][self.casx + casi] != 3 - self.color
+            if 0 < self.casy - casi <= 8 and 0 < self.casx <= 8 and vrab:
+                vrab = cocupadas[self.casy - casi][self.casx] != self.color
+                if vrab:
+                    self.casposibles.append((self.casx, self.casy - casi))
+                    vrab = cocupadas[self.casy - casi][self.casx] != 3 - self.color
+            if 0 < self.casy + casi <= 8 and 0 < self.casx <= 8 and vrar:
+                vrar = cocupadas[self.casy + casi][self.casx] != self.color
+                if vrar:
+                    self.casposibles.append((self.casx, self.casy + casi))
+                    vrar = cocupadas[self.casy + casi][self.casx] != 3 - self.color
         return self.casposibles
 
     def movdiagonal(self, movmax=8):
@@ -143,23 +104,14 @@ class metapieza():
 
 
 class metaballo(metapieza):
-    
     def movcaballo(self):
         for x in [-2, -1, 1, 2]:
             for y in [-(3 - abs(x)), 3 - abs(x)]:
-                print("3")
-                print("4")
-                if 0 < self.casy + y <= 8:
-                    print("5")
-                    if 0 < self.casx + x <= 8:
-                        if cocupadas[self.casy + y][self.casx + x] == 0:
-                            print("6")
-                            self.casposibles.append((self.casx + x, self.casy + y))
-                        elif cocupadas[self.casy + y][self.casx + x] == 3 - self.color:
-                            print("7")
-                            self.casposibles.append((self.casx + x, self.casy + y))
+                if 0 < self.casy + y <= 8 and 0 < self.casx + x <= 8:
+                    if cocupadas[self.casy + y][self.casx + x] == 0 or \
+                            cocupadas[self.casy + y][self.casx + x] == 3 - self.color:
+                        self.casposibles.append((self.casx + x, self.casy + y))
         return self.casposibles
-
 
 
 class metapeon(metapieza):
@@ -333,119 +285,181 @@ def sacasilla(posraton):
     return x, y
 
 
-if __name__ == "__main__":
+ud7 = [0, 2, 7]
+
+
+def acomodar_peones(peonegro, peonblanco):
+    for p in range(1, 9):  # 1-8
+        peonegro.append(Peonegro(p))
+        peonblanco.append(Peonblanco(p))
+
+
+def acomodar_caballos(caballonegro, caballoblanco):
+    for c in (1, 2):
+        caballonegro.append(Caballonegro(ud7[c]))
+        caballoblanco.append(Caballoblanco(ud7[c]))
+
+
+def acomodar_torres(torrenegra, torreblanca):
+    for c in (1, 2):
+        torrenegra.append(Torrenegra(pow(c, 3)))
+        torreblanca.append(Torreblanca(pow(c, 3)))
+
+
+def acomodar_alfiles(alfilnegro, alfilblanco):
+    for c in (1, 2):
+        alfilnegro.append(Alfilnegro(c * 3))
+        alfilblanco.append(Alfilblanco(c * 3))
+
+
+def puede_comer_pieza(nuevacasillax, nuevacasillay):
+    if ocupadas[nuevacasillay][nuevacasillax] != 0:
+        comepieza(sacapieza(nuevacasillax, nuevacasillay))
+
+
+def mover_rey(fichamover, enroke):
+    if fichamover == reynegro or fichamover == reyblanco:
+        # Mover rey negro
+        if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 1):
+            torrenegra[2].cambiasilla(6, 1)
+        if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 1):
+            torrenegra[1].cambiasilla(4, 1)
+        # Mover rey blanco
+    if fichamover == reyblanco:
+        if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 8):
+            torreblanca[2].cambiasilla(6, 8)
+        if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 8):
+            torreblanca[1].cambiasilla(4, 8)
+    enroke = 0
+
+
+def cambiar_turno(fichamover):
+    if fichamover.color == 1:
+        turno = "negras"
+    else:
+        turno = "blancas"
+    return turno
+
+
+def inicializar_juego():
     pygame.init()
     visor = pygame.display.set_mode((560, 560))
     pygame.display.set_caption("ajedrez")
-
-    ud7 = [0, 2, 7]
 
     tablero = pygame.image.load('tablero-ajedrez.png')
     puntoazul = pygame.image.load('puntoazul.png')
     gblancas = pygame.image.load('gblancas.png')
     gnegras = pygame.image.load('gnegras.png')
 
-    peonegro = [0]
-    peonblanco = [0]
-    caballonegro = [0]
-    caballoblanco = [0]
-    torrenegra = [0]
-    torreblanca = [0]
-    alfilnegro = [0]
-    alfilblanco = [0]
+    return visor, tablero, puntoazul, gblancas, gnegras
 
-    for p in range(1, 9):  #1-8
-        peonegro.append(Peonegro(p))
-        peonblanco.append(Peonblanco(p))
 
-    for c in (1, 2):
-        caballonegro.append(Caballonegro(ud7[c]))
-        caballoblanco.append(Caballoblanco(ud7[c]))
-        torrenegra.append(Torrenegra(pow(c, 3)))
-        torreblanca.append(Torreblanca(pow(c, 3)))
-        alfilnegro.append(Alfilnegro(c * 3))
-        alfilblanco.append(Alfilblanco(c * 3))
+torrenegra, torreblanca = [0], [0]
 
+def inicializar_piezas():
     reynegro = Reynegro()
     reyblanco = Reyblanco()
 
     reinanegra = Reinanegra()
     reinablanca = Reinablanca()
 
+    # Inicializar peones, caballos, torres y alfiles
+    peonegro, peonblanco, caballonegro, caballoblanco = [0], [0], [0], [0]
+    alfilnegro, alfilblanco = [0], [0]
+
+    return (reynegro, reyblanco, reinanegra, reinablanca,
+            peonegro, peonblanco, caballonegro, caballoblanco, alfilnegro, alfilblanco)
+
+
+def acomodar_piezas(peonegro, peonblanco, caballonegro, caballoblanco, torrenegra, torreblanca, alfilnegro,
+                    alfilblanco):
+    acomodar_peones(peonegro, peonblanco)
+    acomodar_caballos(caballonegro, caballoblanco)
+    acomodar_torres(torrenegra, torreblanca)
+    acomodar_alfiles(alfilnegro, alfilblanco)
+
+
+def manejar_eventos(click):
+    for evento in pygame.event.get():
+        if evento.type == QUIT:
+            pygame.quit()
+            sys.exit()
+        if evento.type == MOUSEBUTTONDOWN:
+            click.append(pygame.mouse.get_pos())
+    return click
+
+
+def dibujar_piezas(visor, peonblanco, peonegro, caballonegro, caballoblanco,
+                   torrenegra, torreblanca, alfilnegro, alfilblanco,
+                   reynegro, reyblanco, reinanegra, reinablanca):
+    for d in range(1, 9):
+        visor.blit(peonblanco[d].foto, peonblanco[d].pos)
+        visor.blit(peonegro[d].foto, peonegro[d].pos)
+
+    for e in (1, 2):
+        visor.blit(torrenegra[e].foto, torrenegra[e].pos)
+        visor.blit(torreblanca[e].foto, torreblanca[e].pos)
+        visor.blit(alfilnegro[e].foto, alfilnegro[e].pos)
+        visor.blit(alfilblanco[e].foto, alfilblanco[e].pos)
+        visor.blit(caballoblanco[e].foto, caballoblanco[e].pos)
+        visor.blit(caballonegro[e].foto, caballonegro[e].pos)
+
+    visor.blit(reynegro.foto, reynegro.pos)
+    visor.blit(reyblanco.foto, reyblanco.pos)
+    visor.blit(reinanegra.foto, reinanegra.pos)
+    visor.blit(reinablanca.foto, reinablanca.pos)
+
+
+def actualizar_pantalla(visor, tablero, gblancas, gnegras, reynegro, reyblanco):
+    if reynegro.casx > 8:
+        visor.blit(gblancas, (0, 0))
+    elif reyblanco.casx > 8:
+        visor.blit(gnegras, (0, 0))
+
+    pygame.display.update()
+
+
+if __name__ == "_main_":
+    visor, tablero, puntoazul, gblancas, gnegras = inicializar_juego()
+    reynegro, reyblanco, reinanegra, reinablanca, peonegro, peonblanco, caballonegro, caballoblanco, alfilnegro, alfilblanco = inicializar_piezas()
+
     click = []
 
     fichamover = ""
     turno = "blancas"
     print("empiezan las blancas")
+    acomodar_piezas(peonegro, peonblanco, caballonegro, caballoblanco, torrenegra, torreblanca, alfilnegro, alfilblanco)
 
     while True:
-        # print(cocupadas)
-        for evento in pygame.event.get():
-            if evento.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == MOUSEBUTTONDOWN:
-                click.append(pygame.mouse.get_pos())
-
+        click = manejar_eventos(click)
         visor.blit(tablero, (0, 0))
-
-        if len(click) == 1:  #primer click
+        if len(click) == 1:  # primer click
+            # Seleccionar pieza
             posraton = click[0]
             casillax, casillay = sacasilla(posraton)
             fichamover = sacapieza(casillax, casillay)
+
             if (fichamover == 0) or (fichamover.color == 1 and turno == "negras") \
                     or (fichamover.color == 2 and turno == "blancas"):
-                fichamover = ""  #anula movimientos del otro turno
+                fichamover = ""  # anula movimientos del otro turno
             else:
                 posimov = fichamover.puedemovera()
             if fichamover == "":
                 click = []
 
-        if len(click) == 2:  #segundo click
+        if len(click) == 2:  # segundo click
+            # Mover la pieza
             posraton = click[1]
             nuevacasillax, nuevacasillay = sacasilla(posraton)
             if (nuevacasillax, nuevacasillay) in posimov:
-                if ocupadas[nuevacasillay][nuevacasillax] != 0:
-                    comepieza(sacapieza(nuevacasillax, nuevacasillay))
+                puede_comer_pieza(nuevacasillax, nuevacasillay)
                 fichamover.cambiasilla(nuevacasillax, nuevacasillay)
-                if fichamover == reynegro or fichamover == reyblanco:
-                    if fichamover == reynegro:
-                        if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 1):
-                            torrenegra[2].cambiasilla(6, 1)
-                        if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 1):
-                            torrenegra[1].cambiasilla(4, 1)
-                    if fichamover == reyblanco:
-                        if enroke == 1 and (nuevacasillax, nuevacasillay) == (7, 8):
-                            torreblanca[2].cambiasilla(6, 8)
-                        if enroke == 2 and (nuevacasillax, nuevacasillay) == (3, 8):
-                            torreblanca[1].cambiasilla(4, 8)
-                    enroke = 0
-                if fichamover.color == 1:
-                    turno = "negras"
-                else:
-                    turno = "blancas"
 
-        #refrescos y representaciones
-        if reynegro.casx < 9 and reyblanco.casx < 9:
-            for d in range(1, 9):
-                visor.blit(peonblanco[d].foto, peonblanco[d].pos)
-                visor.blit(peonegro[d].foto, peonegro[d].pos)
+                mover_rey(fichamover, enroke)
 
-            for e in (1, 2):
-                visor.blit(torrenegra[e].foto, torrenegra[e].pos)
-                visor.blit(torreblanca[e].foto, torreblanca[e].pos)
-
-                visor.blit(alfilnegro[e].foto, alfilnegro[e].pos)
-                visor.blit(alfilblanco[e].foto, alfilblanco[e].pos)
-
-                visor.blit(caballoblanco[e].foto, caballoblanco[e].pos)
-                visor.blit(caballonegro[e].foto, caballonegro[e].pos)
-
-            visor.blit(reynegro.foto, reynegro.pos)
-            visor.blit(reyblanco.foto, reyblanco.pos)
-
-            visor.blit(reinanegra.foto, reinanegra.pos)
-            visor.blit(reinablanca.foto, reinablanca.pos)
+                turno = cambiar_turno(fichamover)
+        dibujar_piezas(visor, peonblanco, peonegro, caballonegro, caballoblanco, torrenegra, torreblanca, alfilnegro,
+                       alfilblanco, reynegro, reyblanco, reinanegra, reinablanca)
 
         if len(click) > 1:
             click = []
@@ -454,12 +468,6 @@ if __name__ == "__main__":
             for pos in posimov:
                 visor.blit(puntoazul, (casilla[pos[0]], casilla[pos[1]]))
 
-        if reynegro.casx > 8:
-            visor.blit(gblancas, (0, 0))
-        elif reyblanco.casx > 8:
-            visor.blit(gnegras, (0, 0))
+        actualizar_pantalla(visor, tablero, gblancas, gnegras, reynegro, reyblanco)
 
-        pygame.display.update()
-
-        pygame.time.wait(20)  #limita a 50 fps para ahorrar cpu
-
+        pygame.time.wait(20)  # limita a 50 fps para ahorrar cpu
